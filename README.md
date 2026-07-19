@@ -1,0 +1,9 @@
+# Meu Primeiro PR
+
+Este é um repositório de prática criado para aprender o fluxo de Pull Requests no GitHub: branch, commit, push e revisão.
+
+## Como este repo funciona
+
+1. Uma branch é criada a partir da `main`.
+2. Uma pequena melhoria é feita nessa branch.
+3. Um Pull Request é aberto para revisão antes do merge.
