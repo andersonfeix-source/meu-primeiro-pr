@@ -7,3 +7,7 @@ Este é um repositório de prática criado para aprender o fluxo de Pull Request
 1. Uma branch é criada a partir da `main`.
 2. Uma pequena melhoria é feita nessa branch.
 3. Um Pull Request é aberto para revisão antes do merge.
+
+## Licença
+
+Este projeto é apenas para fins de aprendizado e não possui licença formal.
