@@ -8,6 +8,12 @@ Este é um repositório de prática criado para aprender o fluxo de Pull Request
 2. Uma pequena melhoria é feita nessa branch.
 3. Um Pull Request é aberto para revisão antes do merge.
 
+## Extras
+
+- [`music/coracao-da-bahia`](./music/coracao-da-bahia) — faixa de percussão
+  inspirada na Timbalada, sintetizada por código sobre um MP3 de batimento
+  cardíaco.
+
 ## Licença
 
 Este projeto é apenas para fins de aprendizado e não possui licença formal.
