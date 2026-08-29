@@ -1,3 +1,23 @@
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {});
+  });
+}
+
+let deferredInstallPrompt = null;
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  const installBtn = document.getElementById("install-btn");
+  installBtn.hidden = false;
+  installBtn.addEventListener("click", async () => {
+    installBtn.hidden = true;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+  });
+});
+
 const STORAGE_KEY = "mini-crm-contacts";
 
 const STATUS_LABELS = {
