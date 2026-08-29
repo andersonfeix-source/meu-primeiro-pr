@@ -45,7 +45,7 @@ body {
 
 .container {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
   gap: 20px;
   padding: 24px 32px;
   align-items: start;
@@ -53,7 +53,8 @@ body {
 
 @media (max-width: 800px) {
   .container {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
   }
 }
 
@@ -78,8 +79,14 @@ body {
 
 .row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
+}
+
+@media (max-width: 420px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 label {
@@ -162,10 +169,14 @@ button.secondary {
 .list-controls {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
 }
 
 #search {
-  min-width: 220px;
+  flex: 1;
+  min-width: 160px;
 }
 
 .empty-state {
