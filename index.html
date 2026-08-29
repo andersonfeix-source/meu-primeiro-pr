@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini CRM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Mini CRM</h1>
+    <p class="subtitle">Cadastro simples de contatos e clientes</p>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2 id="form-title">Novo contato</h2>
+      <form id="contact-form">
+        <input type="hidden" id="contact-id">
+
+        <div class="field">
+          <label for="name">Nome *</label>
+          <input type="text" id="name" required placeholder="Ex: Maria Silva">
+        </div>
+
+        <div class="field">
+          <label for="company">Empresa</label>
+          <input type="text" id="company" placeholder="Ex: Acme Ltda">
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="nome@exemplo.com">
+          </div>
+          <div class="field">
+            <label for="phone">Telefone</label>
+            <input type="tel" id="phone" placeholder="(00) 00000-0000">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="lead">Lead</option>
+            <option value="contato">Em contato</option>
+            <option value="negociacao">Negociação</option>
+            <option value="cliente">Cliente</option>
+            <option value="perdido">Perdido</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="notes">Notas</label>
+          <textarea id="notes" rows="3" placeholder="Observações sobre o contato..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submit-btn">Salvar contato</button>
+          <button type="button" id="cancel-edit" class="secondary" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel list-panel">
+      <div class="list-header">
+        <h2>Contatos <span id="count" class="count">0</span></h2>
+        <div class="list-controls">
+          <input type="search" id="search" placeholder="Buscar por nome, empresa ou e-mail...">
+          <select id="filter-status">
+            <option value="">Todos os status</option>
+            <option value="lead">Lead</option>
+            <option value="contato">Em contato</option>
+            <option value="negociacao">Negociação</option>
+            <option value="cliente">Cliente</option>
+            <option value="perdido">Perdido</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="empty-state" class="empty-state" hidden>
+        Nenhum contato cadastrado ainda. Use o formulário ao lado para adicionar o primeiro.
+      </div>
+
+      <ul id="contact-list" class="contact-list"></ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
