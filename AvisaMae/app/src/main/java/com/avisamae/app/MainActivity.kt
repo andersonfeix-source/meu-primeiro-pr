@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.inputNames.setText(Prefs.getRawNames(this))
-        binding.inputPhone.setText(Prefs.getPhone(this))
+        binding.inputPhone.setText(Prefs.getRawPhones(this))
 
         binding.buttonSave.setOnClickListener {
             Prefs.save(this, binding.inputNames.text.toString(), binding.inputPhone.text.toString())

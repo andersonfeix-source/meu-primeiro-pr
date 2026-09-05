@@ -3,9 +3,9 @@
     <string name="app_name">Avisa Mãe</string>
 
     <string name="setup_title">Configuração do Avisa Mãe</string>
-    <string name="setup_intro">Preencha abaixo o nome exatamente como aparece no WhatsApp da pessoa que deve disparar o alerta (ex.: nome do filho), e o telefone para ligar de volta.</string>
+    <string name="setup_intro">Preencha abaixo o nome exatamente como aparece no WhatsApp da(s) pessoa(s) que devem disparar o alerta (ex.: nome do filho), e o(s) telefone(s) que podem ligar.</string>
     <string name="label_names">Nome(s) no WhatsApp (separe por vírgula se houver mais de um)</string>
-    <string name="label_phone">Telefone para ligar de volta (com DDD)</string>
+    <string name="label_phone">Telefone(s) com DDD, separados por vírgula se houver mais de um (o primeiro é usado para "Ligar de volta" e "Abrir WhatsApp")</string>
     <string name="save">Salvar configuração</string>
     <string name="saved">Configuração salva</string>
 

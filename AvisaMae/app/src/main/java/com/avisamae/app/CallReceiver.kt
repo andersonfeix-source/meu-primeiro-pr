@@ -20,11 +20,11 @@ class CallReceiver : BroadcastReceiver() {
         val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
         if (state != TelephonyManager.EXTRA_STATE_RINGING) return
 
-        val configuredPhone = Prefs.getPhone(context)
-        if (configuredPhone.isBlank()) return
+        val configuredPhones = Prefs.getPhones(context)
+        if (configuredPhones.isEmpty()) return
 
         val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER).orEmpty()
-        if (!numbersMatch(incomingNumber, configuredPhone)) return
+        if (configuredPhones.none { numbersMatch(incomingNumber, it) }) return
 
         AlertLauncher.launch(
             context = context.applicationContext,

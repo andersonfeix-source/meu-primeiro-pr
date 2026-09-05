@@ -51,7 +51,9 @@ Abra o app **Avisa Mãe** e:
    (o nome que está salvo na agenda dela para o seu contato — é esse nome que
    aparece no topo da notificação do WhatsApp). Pode colocar mais de um nome
    separado por vírgula.
-2. Preencha o **telefone para ligar de volta**.
+2. Preencha o(s) **telefone(s)** que podem ligar (separados por vírgula se
+   houver mais de um). O primeiro número da lista é o usado pelos botões
+   "Ligar de volta" e "Abrir WhatsApp".
 3. Toque em **"Salvar configuração"**.
 4. Toque em **"1. Permitir acesso às notificações"** → na tela que abrir,
    ative o "Avisa Mãe" (é o que permite o app ler que chegou mensagem do
