@@ -47,13 +47,15 @@ Este é um projeto Gradle/Android Studio padrão.
 
 Abra o app **Avisa Mãe** e:
 
-1. Preencha o **nome exatamente como aparece no WhatsApp dela** para você
-   (o nome que está salvo na agenda dela para o seu contato — é esse nome que
-   aparece no topo da notificação do WhatsApp). Pode colocar mais de um nome
-   separado por vírgula.
-2. Preencha o(s) **telefone(s)** que podem ligar (separados por vírgula se
-   houver mais de um). O primeiro número da lista é o usado pelos botões
-   "Ligar de volta" e "Abrir WhatsApp".
+1. Para cada pessoa que deve disparar o alerta, toque em **"+ Adicionar
+   pessoa"** e preencha:
+   - **Nome no WhatsApp**: exatamente como está salvo na agenda dela para
+     esse contato — é esse nome que aparece no topo da notificação do
+     WhatsApp.
+   - **Telefone**: o número dessa pessoa, com DDD.
+   Pode adicionar quantas pessoas quiser; cada uma tem seu próprio nome e
+   telefone, e os botões "Ligar de volta" / "Abrir WhatsApp" já usam o
+   telefone correto de quem mandou o alerta.
 3. Toque em **"Salvar configuração"**.
 4. Toque em **"1. Permitir acesso às notificações"** → na tela que abrir,
    ative o "Avisa Mãe" (é o que permite o app ler que chegou mensagem do

@@ -1,45 +1,64 @@
 package com.avisamae.app
 
 import android.content.Context
+import org.json.JSONArray
+import org.json.JSONObject
+
+data class Contato(val name: String, val phone: String)
 
 /**
- * Guarda a configuração feita na tela inicial: o(s) nome(s) que devem
- * disparar o alerta (exatamente como aparecem no WhatsApp) e o(s)
- * telefone(s) usados para detectar ligações e para "ligar de volta".
+ * Guarda a lista de pessoas configuradas na tela inicial: cada uma com o
+ * nome exatamente como aparece no WhatsApp e o telefone correspondente,
+ * usados para detectar mensagens/ligações e para os botões de resposta.
  */
 object Prefs {
     private const val FILE = "avisa_mae_prefs"
-    private const val KEY_NAMES = "filter_names"
-    private const val KEY_PHONES = "callback_phones"
+    private const val KEY_CONTACTS = "contacts_json"
 
-    fun save(context: Context, names: String, phones: String) {
+    fun saveContacts(context: Context, contacts: List<Contato>) {
+        val array = JSONArray()
+        contacts.forEach { contato ->
+            array.put(
+                JSONObject().apply {
+                    put("name", contato.name)
+                    put("phone", contato.phone)
+                }
+            )
+        }
         context.getSharedPreferences(FILE, Context.MODE_PRIVATE).edit()
-            .putString(KEY_NAMES, names)
-            .putString(KEY_PHONES, phones)
+            .putString(KEY_CONTACTS, array.toString())
             .apply()
     }
 
-    fun getNames(context: Context): List<String> =
-        splitList(context, KEY_NAMES)
+    fun getContacts(context: Context): List<Contato> {
+        val raw = context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
+            .getString(KEY_CONTACTS, null) ?: return emptyList()
+        return try {
+            val array = JSONArray(raw)
+            (0 until array.length()).mapNotNull { i ->
+                val obj = array.optJSONObject(i) ?: return@mapNotNull null
+                val name = obj.optString("name").trim()
+                val phone = obj.optString("phone").trim()
+                if (name.isBlank() && phone.isBlank()) null else Contato(name, phone)
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
 
-    fun getRawNames(context: Context): String =
-        context.getSharedPreferences(FILE, Context.MODE_PRIVATE).getString(KEY_NAMES, "").orEmpty()
+    fun findByName(context: Context, title: String): Contato? =
+        getContacts(context).firstOrNull {
+            it.name.isNotBlank() && title.trim().equals(it.name, ignoreCase = true)
+        }
 
-    fun getPhones(context: Context): List<String> =
-        splitList(context, KEY_PHONES)
+    fun findByPhone(context: Context, incomingNumber: String): Contato? =
+        getContacts(context).firstOrNull {
+            it.phone.isNotBlank() && numbersMatch(incomingNumber, it.phone)
+        }
 
-    fun getRawPhones(context: Context): String =
-        context.getSharedPreferences(FILE, Context.MODE_PRIVATE).getString(KEY_PHONES, "").orEmpty()
-
-    /** Primeiro número configurado, usado pelos botões "Ligar de volta" e "Abrir WhatsApp". */
-    fun getPhone(context: Context): String =
-        getPhones(context).firstOrNull().orEmpty()
-
-    private fun splitList(context: Context, key: String): List<String> =
-        context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
-            .getString(key, "")
-            .orEmpty()
-            .split(",")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
+    private fun numbersMatch(a: String, b: String): Boolean {
+        val da = a.filter { it.isDigit() }.takeLast(8)
+        val db = b.filter { it.isDigit() }.takeLast(8)
+        return da.isNotEmpty() && da == db
+    }
 }

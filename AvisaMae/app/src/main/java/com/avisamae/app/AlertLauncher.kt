@@ -29,7 +29,7 @@ object AlertLauncher {
     private const val CHANNEL_ID = "avisa_mae_alerta"
     private const val NOTIFICATION_ID = 4821
 
-    fun launch(context: Context, sender: String, message: String, isCall: Boolean, source: Source) {
+    fun launch(context: Context, sender: String, phone: String, message: String, isCall: Boolean, source: Source) {
         val appContext = context.applicationContext
         ensureChannel(appContext)
 
@@ -40,6 +40,7 @@ object AlertLauncher {
                     Intent.FLAG_ACTIVITY_SINGLE_TOP
             )
             putExtra(AlertActivity.EXTRA_SENDER, sender)
+            putExtra(AlertActivity.EXTRA_PHONE, phone)
             putExtra(AlertActivity.EXTRA_MESSAGE, message)
             putExtra(AlertActivity.EXTRA_IS_CALL, isCall)
             putExtra(AlertActivity.EXTRA_SOURCE, source.name)

@@ -25,10 +25,7 @@ class NotificationService : NotificationListenerService() {
         val text = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString().orEmpty()
         if (title.isBlank()) return
 
-        val filterNames = Prefs.getNames(applicationContext)
-        if (filterNames.isEmpty()) return
-        val matches = filterNames.any { title.trim().equals(it.trim(), ignoreCase = true) }
-        if (!matches) return
+        val contato = Prefs.findByName(applicationContext, title) ?: return
 
         val isCall = sbn.notification.category == Notification.CATEGORY_CALL ||
             text.contains("chamada de voz", ignoreCase = true) ||
@@ -37,7 +34,8 @@ class NotificationService : NotificationListenerService() {
 
         AlertLauncher.launch(
             context = applicationContext,
-            sender = title,
+            sender = contato.name,
+            phone = contato.phone,
             message = text.ifBlank { "Nova mensagem no WhatsApp" },
             isCall = isCall,
             source = AlertLauncher.Source.WHATSAPP

@@ -26,33 +26,18 @@
             android:textSize="16sp"
             android:layout_marginBottom="24dp" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/contactsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_names"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
+            android:orientation="vertical" />
 
-        <EditText
-            android:id="@+id/inputNames"
+        <Button
+            android:id="@+id/buttonAddContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:autofillHints="name"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_phone"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp" />
-
-        <EditText
-            android:id="@+id/inputPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
+            android:text="@string/button_add_contact"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp" />
 
         <Button

@@ -28,6 +28,7 @@ class AlertActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_SENDER = "extra_sender"
+        const val EXTRA_PHONE = "extra_phone"
         const val EXTRA_MESSAGE = "extra_message"
         const val EXTRA_IS_CALL = "extra_is_call"
         const val EXTRA_SOURCE = "extra_source"
@@ -36,6 +37,7 @@ class AlertActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAlertBinding
     private var ringtone: Ringtone? = null
     private var vibrator: Vibrator? = null
+    private var phone: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +47,7 @@ class AlertActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val sender = intent.getStringExtra(EXTRA_SENDER).orEmpty()
+        phone = intent.getStringExtra(EXTRA_PHONE).orEmpty()
         val message = intent.getStringExtra(EXTRA_MESSAGE).orEmpty()
         val isCall = intent.getBooleanExtra(EXTRA_IS_CALL, false)
         val source = intent.getStringExtra(EXTRA_SOURCE)
@@ -135,7 +138,6 @@ class AlertActivity : AppCompatActivity() {
     }
 
     private fun openWhatsapp() {
-        val phone = Prefs.getPhone(this)
         if (phone.isNotBlank()) {
             val digits = phone.filter { it.isDigit() }.removePrefix("0")
             val international = if (digits.startsWith("55")) digits else "55$digits"
@@ -156,7 +158,6 @@ class AlertActivity : AppCompatActivity() {
     }
 
     private fun callBack() {
-        val phone = Prefs.getPhone(this)
         if (phone.isBlank()) return
         val uri = Uri.parse("tel:$phone")
         val hasCallPermission = checkSelfPermission(android.Manifest.permission.CALL_PHONE) ==

@@ -10,11 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.avisamae.app.databinding.ActivityMainBinding
+import com.avisamae.app.databinding.ItemContactBinding
 
 /**
  * Tela de configuração: quem vai disparar o alerta (nome exatamente como
- * aparece no WhatsApp da mãe) e o telefone para "ligar de volta", além
- * dos atalhos para conceder as permissões especiais necessárias.
+ * aparece no WhatsApp da mãe, e o telefone de cada pessoa), além dos
+ * atalhos para conceder as permissões especiais necessárias.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -40,11 +41,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.inputNames.setText(Prefs.getRawNames(this))
-        binding.inputPhone.setText(Prefs.getRawPhones(this))
+        val existing = Prefs.getContacts(this)
+        if (existing.isEmpty()) {
+            addContactRow()
+        } else {
+            existing.forEach { addContactRow(it.name, it.phone) }
+        }
+
+        binding.buttonAddContact.setOnClickListener { addContactRow() }
 
         binding.buttonSave.setOnClickListener {
-            Prefs.save(this, binding.inputNames.text.toString(), binding.inputPhone.text.toString())
+            Prefs.saveContacts(this, collectContacts())
             Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
         }
 
@@ -61,17 +68,35 @@ class MainActivity : AppCompatActivity() {
         binding.buttonFullScreenSettings.setOnClickListener { openFullScreenIntentSettings() }
 
         binding.buttonTest.setOnClickListener {
-            val firstName = Prefs.getNames(this).firstOrNull().takeUnless { it.isNullOrBlank() }
-                ?: getString(R.string.test_sender_fallback)
+            val contato = collectContacts().firstOrNull()
             AlertLauncher.launch(
                 this,
-                sender = firstName,
+                sender = contato?.name?.takeUnless { it.isBlank() } ?: getString(R.string.test_sender_fallback),
+                phone = contato?.phone.orEmpty(),
                 message = getString(R.string.test_message),
                 isCall = false,
                 source = AlertLauncher.Source.WHATSAPP
             )
         }
     }
+
+    private fun addContactRow(name: String = "", phone: String = "") {
+        val row = ItemContactBinding.inflate(layoutInflater, binding.contactsContainer, false)
+        row.inputContactName.setText(name)
+        row.inputContactPhone.setText(phone)
+        row.buttonRemove.setOnClickListener {
+            binding.contactsContainer.removeView(row.root)
+        }
+        binding.contactsContainer.addView(row.root)
+    }
+
+    private fun collectContacts(): List<Contato> =
+        (0 until binding.contactsContainer.childCount).mapNotNull { i ->
+            val row = ItemContactBinding.bind(binding.contactsContainer.getChildAt(i))
+            val name = row.inputContactName.text.toString().trim()
+            val phone = row.inputContactPhone.text.toString().trim()
+            if (name.isBlank() && phone.isBlank()) null else Contato(name, phone)
+        }
 
     override fun onResume() {
         super.onResume()
