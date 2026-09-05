@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Avisa Mãe</string>
+
+    <string name="setup_title">Configuração do Avisa Mãe</string>
+    <string name="setup_intro">Preencha abaixo o nome exatamente como aparece no WhatsApp da pessoa que deve disparar o alerta (ex.: nome do filho), e o telefone para ligar de volta.</string>
+    <string name="label_names">Nome(s) no WhatsApp (separe por vírgula se houver mais de um)</string>
+    <string name="label_phone">Telefone para ligar de volta (com DDD)</string>
+    <string name="save">Salvar configuração</string>
+    <string name="saved">Configuração salva</string>
+
+    <string name="section_permissions">Permissões necessárias</string>
+    <string name="button_notification_access">1. Permitir acesso às notificações</string>
+    <string name="button_permissions">2. Permitir telefone e chamadas</string>
+    <string name="button_battery">3. Ignorar otimização de bateria</string>
+    <string name="button_full_screen_settings">4. Permitir notificações em tela cheia</string>
+    <string name="button_test">Testar alerta agora</string>
+
+    <string name="status_notifications_on">Acesso às notificações: ATIVADO</string>
+    <string name="status_notifications_off">Acesso às notificações: DESATIVADO — toque no botão 1 acima e ative o Avisa Mãe</string>
+    <string name="battery_already_ok">A otimização de bateria já está desativada para este app</string>
+    <string name="full_screen_settings_unavailable">Não foi possível abrir esse ajuste neste aparelho</string>
+    <string name="full_screen_settings_not_needed">Este ajuste não é necessário nesta versão do Android</string>
+
+    <string name="test_sender_fallback">Teste</string>
+    <string name="test_message">Esta é uma mensagem de teste do Avisa Mãe. Se você está vendo esta tela cheia, está tudo funcionando!</string>
+
+    <string name="alert_headline_message">Mensagem de %1$s</string>
+    <string name="alert_headline_call">Ligação de %1$s</string>
+    <string name="alert_default_message">Toque em um dos botões abaixo</string>
+
+    <string name="button_open_whatsapp">Abrir WhatsApp</string>
+    <string name="button_call_back">Ligar de volta</string>
+    <string name="button_answer_call">Atender ligação</string>
+    <string name="button_close">Fechar</string>
+</resources>
