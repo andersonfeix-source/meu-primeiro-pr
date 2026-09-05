@@ -135,6 +135,21 @@ class AlertActivity : AppCompatActivity() {
     }
 
     private fun openWhatsapp() {
+        val phone = Prefs.getPhone(this)
+        if (phone.isNotBlank()) {
+            val digits = phone.filter { it.isDigit() }.removePrefix("0")
+            val international = if (digits.startsWith("55")) digits else "55$digits"
+            for (pkg in listOf("com.whatsapp", "com.whatsapp.w4b")) {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$international")).apply {
+                        setPackage(pkg)
+                    }
+                    startActivity(intent)
+                    return
+                } catch (_: Exception) { }
+            }
+        }
+
         val launchIntent = packageManager.getLaunchIntentForPackage("com.whatsapp")
             ?: packageManager.getLaunchIntentForPackage("com.whatsapp.w4b")
         launchIntent?.let { startActivity(it) }
