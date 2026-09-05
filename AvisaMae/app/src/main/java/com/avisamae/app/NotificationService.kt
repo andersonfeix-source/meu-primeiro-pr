@@ -27,7 +27,7 @@ class NotificationService : NotificationListenerService() {
 
         val filterNames = Prefs.getNames(applicationContext)
         if (filterNames.isEmpty()) return
-        val matches = filterNames.any { title.contains(it, ignoreCase = true) }
+        val matches = filterNames.any { title.trim().equals(it.trim(), ignoreCase = true) }
         if (!matches) return
 
         val isCall = sbn.notification.category == Notification.CATEGORY_CALL ||
