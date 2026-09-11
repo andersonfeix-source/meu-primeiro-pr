@@ -54,7 +54,43 @@ function loadFromStorage(key, fallback) {
 }
 
 function saveToStorage(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch (err) {
+    console.error(`Falha ao salvar "${key}" no armazenamento do navegador:`, err);
+    return false;
+  }
+}
+
+function showToast(message, type = "info", duration = 6000) {
+  const container = document.getElementById("toast-container");
+  const el = document.createElement("div");
+  el.className = `toast ${type}`;
+  el.textContent = message;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), duration);
+}
+
+const STORAGE_FULL_MESSAGE =
+  "Isso ficou salvo só nesta sessão — o armazenamento do navegador encheu (fotos ocupam espaço). Remova alguma foto antiga em Meu Guarda-roupa ou Looks Salvos para liberar espaço.";
+
+async function fileToCompressedDataUrl(file, maxDim = 900, quality = 0.82) {
+  const rawDataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+  const img = await loadImage(rawDataUrl);
+  const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+  return canvas.toDataURL("image/jpeg", quality);
 }
 
 // ---------- Tabs ----------
@@ -69,35 +105,36 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
 
 // ---------- Add item ----------
 const itemForm = document.getElementById("item-form");
-itemForm.addEventListener("submit", (e) => {
+itemForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const name = document.getElementById("item-name").value.trim();
   const category = document.getElementById("item-category").value;
   const color = document.getElementById("item-color").value.trim().toLowerCase();
-  const photoInput = document.getElementById("item-photo");
-  const file = photoInput.files[0];
+  const file = document.getElementById("item-photo").files[0];
 
-  const addItem = (imageDataUrl) => {
-    wardrobe.push({
-      id: crypto.randomUUID(),
-      name,
-      category,
-      color,
-      imageDataUrl: imageDataUrl || null,
-    });
-    saveToStorage(STORAGE_KEYS.wardrobe, wardrobe);
-    renderWardrobe();
-    itemForm.reset();
-  };
-
+  let imageDataUrl = null;
   if (file) {
-    const reader = new FileReader();
-    reader.onload = () => addItem(reader.result);
-    reader.readAsDataURL(file);
-  } else {
-    addItem(null);
+    try {
+      imageDataUrl = await fileToCompressedDataUrl(file);
+    } catch (err) {
+      showToast("Não consegui processar essa foto. Tente outra imagem.", "error");
+      return;
+    }
   }
+
+  wardrobe.push({
+    id: crypto.randomUUID(),
+    name,
+    category,
+    color,
+    imageDataUrl,
+  });
+
+  const saved = saveToStorage(STORAGE_KEYS.wardrobe, wardrobe);
+  renderWardrobe();
+  itemForm.reset();
+  if (!saved) showToast(STORAGE_FULL_MESSAGE, "error");
 });
 
 function removeItem(id) {
@@ -260,8 +297,10 @@ function saveCurrentLook(compositeImage) {
     createdAt: new Date().toISOString(),
     compositeImage: compositeImage || null,
   });
-  saveToStorage(STORAGE_KEYS.looks, savedLooks);
+  const saved = saveToStorage(STORAGE_KEYS.looks, savedLooks);
   renderSavedLooks();
+  if (!saved) showToast(STORAGE_FULL_MESSAGE, "error");
+  else showToast("Look salvo!", "success");
 }
 
 // ---------- Provador virtual ----------
@@ -301,15 +340,15 @@ tryonResetBtn.addEventListener("click", () => {
   renderTryonStage();
 });
 
-tryonPhotoInput.addEventListener("change", () => {
+tryonPhotoInput.addEventListener("change", async () => {
   const file = tryonPhotoInput.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    tryonState.backgroundDataUrl = reader.result;
+  try {
+    tryonState.backgroundDataUrl = await fileToCompressedDataUrl(file, 1200, 0.85);
     renderTryonStage();
-  };
-  reader.readAsDataURL(file);
+  } catch (err) {
+    showToast("Não consegui processar essa foto. Tente outra imagem.", "error");
+  }
 });
 
 function buildDefaultStickers(items) {
@@ -521,7 +560,7 @@ async function composeTryonImage() {
     ctx.drawImage(img, sticker.x * scaleX, sticker.y * scaleY, sticker.w * scaleX, sticker.h * scaleY);
   }
 
-  return canvas.toDataURL("image/png");
+  return canvas.toDataURL("image/jpeg", 0.85);
 }
 
 tryonExportBtn.addEventListener("click", async () => {
@@ -529,7 +568,7 @@ tryonExportBtn.addEventListener("click", async () => {
   const dataUrl = await composeTryonImage();
   const link = document.createElement("a");
   link.href = dataUrl;
-  link.download = "meu-look.png";
+  link.download = "meu-look.jpg";
   link.click();
 });
 
