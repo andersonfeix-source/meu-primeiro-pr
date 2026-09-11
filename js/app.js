@@ -72,6 +72,19 @@ function showToast(message, type = "info", duration = 6000) {
   setTimeout(() => el.remove(), duration);
 }
 
+function generateId() {
+  try {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+  } catch (err) {
+    // crypto.randomUUID exige contexto seguro (https/localhost); Safari
+    // costuma recusar quando o arquivo é aberto direto (file://). Cai no
+    // gerador abaixo, que funciona em qualquer situação.
+  }
+  return `id-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 const STORAGE_FULL_MESSAGE =
   "Isso ficou salvo só nesta sessão — o armazenamento do navegador encheu (fotos ocupam espaço). Remova alguma foto antiga em Meu Guarda-roupa ou Looks Salvos para liberar espaço.";
 
@@ -108,33 +121,38 @@ const itemForm = document.getElementById("item-form");
 itemForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("item-name").value.trim();
-  const category = document.getElementById("item-category").value;
-  const color = document.getElementById("item-color").value.trim().toLowerCase();
-  const file = document.getElementById("item-photo").files[0];
+  try {
+    const name = document.getElementById("item-name").value.trim();
+    const category = document.getElementById("item-category").value;
+    const color = document.getElementById("item-color").value.trim().toLowerCase();
+    const file = document.getElementById("item-photo").files[0];
 
-  let imageDataUrl = null;
-  if (file) {
-    try {
-      imageDataUrl = await fileToCompressedDataUrl(file);
-    } catch (err) {
-      showToast("Não consegui processar essa foto. Tente outra imagem.", "error");
-      return;
+    let imageDataUrl = null;
+    if (file) {
+      try {
+        imageDataUrl = await fileToCompressedDataUrl(file);
+      } catch (err) {
+        showToast("Não consegui processar essa foto. Tente outra imagem.", "error");
+        return;
+      }
     }
+
+    wardrobe.push({
+      id: generateId(),
+      name,
+      category,
+      color,
+      imageDataUrl,
+    });
+
+    const saved = saveToStorage(STORAGE_KEYS.wardrobe, wardrobe);
+    renderWardrobe();
+    itemForm.reset();
+    if (!saved) showToast(STORAGE_FULL_MESSAGE, "error");
+  } catch (err) {
+    console.error("Falha ao adicionar peça:", err);
+    showToast(`Não consegui salvar a peça: ${err.message || err}`, "error");
   }
-
-  wardrobe.push({
-    id: crypto.randomUUID(),
-    name,
-    category,
-    color,
-    imageDataUrl,
-  });
-
-  const saved = saveToStorage(STORAGE_KEYS.wardrobe, wardrobe);
-  renderWardrobe();
-  itemForm.reset();
-  if (!saved) showToast(STORAGE_FULL_MESSAGE, "error");
 });
 
 function removeItem(id) {
@@ -291,16 +309,21 @@ function renderLookPreview(items) {
 
 function saveCurrentLook(compositeImage) {
   if (!currentLook) return;
-  savedLooks.push({
-    id: crypto.randomUUID(),
-    itemIds: currentLook.map((i) => i.id),
-    createdAt: new Date().toISOString(),
-    compositeImage: compositeImage || null,
-  });
-  const saved = saveToStorage(STORAGE_KEYS.looks, savedLooks);
-  renderSavedLooks();
-  if (!saved) showToast(STORAGE_FULL_MESSAGE, "error");
-  else showToast("Look salvo!", "success");
+  try {
+    savedLooks.push({
+      id: generateId(),
+      itemIds: currentLook.map((i) => i.id),
+      createdAt: new Date().toISOString(),
+      compositeImage: compositeImage || null,
+    });
+    const saved = saveToStorage(STORAGE_KEYS.looks, savedLooks);
+    renderSavedLooks();
+    if (!saved) showToast(STORAGE_FULL_MESSAGE, "error");
+    else showToast("Look salvo!", "success");
+  } catch (err) {
+    console.error("Falha ao salvar o look:", err);
+    showToast(`Não consegui salvar o look: ${err.message || err}`, "error");
+  }
 }
 
 // ---------- Provador virtual ----------
@@ -354,7 +377,7 @@ tryonPhotoInput.addEventListener("change", async () => {
 function buildDefaultStickers(items) {
   tryonNextZ = 1;
   return items.map((item, index) => ({
-    id: crypto.randomUUID(),
+    id: generateId(),
     itemId: item.id,
     x: 20 + (index % 2) * 130,
     y: 20 + Math.floor(index / 2) * 150,
@@ -565,17 +588,27 @@ async function composeTryonImage() {
 
 tryonExportBtn.addEventListener("click", async () => {
   if (!tryonState.backgroundDataUrl) return;
-  const dataUrl = await composeTryonImage();
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = "meu-look.jpg";
-  link.click();
+  try {
+    const dataUrl = await composeTryonImage();
+    const link = document.createElement("a");
+    link.href = dataUrl;
+    link.download = "meu-look.jpg";
+    link.click();
+  } catch (err) {
+    console.error("Falha ao exportar imagem:", err);
+    showToast(`Não consegui gerar a imagem: ${err.message || err}`, "error");
+  }
 });
 
 tryonSaveLookBtn.addEventListener("click", async () => {
   if (!tryonState.backgroundDataUrl || !currentLook) return;
-  const dataUrl = await composeTryonImage();
-  saveCurrentLook(dataUrl);
+  try {
+    const dataUrl = await composeTryonImage();
+    saveCurrentLook(dataUrl);
+  } catch (err) {
+    console.error("Falha ao compor a imagem do look:", err);
+    showToast(`Não consegui gerar a imagem: ${err.message || err}`, "error");
+  }
 });
 
 // ---------- Saved looks ----------
