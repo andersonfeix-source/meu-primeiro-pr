@@ -72,6 +72,31 @@
       <div id="look-preview" class="look-preview">
         <p class="empty-state">Clique em "Gerar look" para receber uma sugestão com as peças do seu guarda-roupa.</p>
       </div>
+
+      <div class="tryon-section">
+        <button id="tryon-toggle-btn" class="btn-secondary" disabled>🖼️ Provador virtual</button>
+
+        <div id="tryon-editor" class="tryon-editor" hidden>
+          <p class="tryon-hint">
+            Envie sua foto (corpo inteiro funciona melhor), depois arraste as peças por cima dela.
+            Puxe o cantinho para redimensionar e use os botões para trazer para frente/trás ou remover.
+          </p>
+
+          <div class="tryon-controls">
+            <label class="btn-secondary tryon-upload-label">
+              📷 Enviar minha foto
+              <input type="file" id="tryon-photo-input" accept="image/*" hidden />
+            </label>
+            <button id="tryon-reset-btn" class="btn-secondary" disabled>↺ Reposicionar peças</button>
+            <button id="tryon-export-btn" class="btn-secondary" disabled>⬇️ Exportar imagem</button>
+            <button id="tryon-save-look-btn" class="btn-secondary" disabled>💾 Salvar com a foto no look</button>
+          </div>
+
+          <div id="tryon-stage" class="tryon-stage">
+            <p class="empty-state" id="tryon-stage-empty">Envie sua foto acima para começar.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ABA: LOOKS SALVOS -->
