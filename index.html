@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monta Look — Guarda-roupa Inteligente</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>👗 Monta Look</h1>
+    <p>Cadastre suas roupas e deixe o app sugerir combinações para você.</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="guarda-roupa">Meu Guarda-roupa</button>
+    <button class="tab-btn" data-tab="montar-look">Montar Look</button>
+    <button class="tab-btn" data-tab="looks-salvos">Looks Salvos</button>
+  </nav>
+
+  <main>
+    <!-- ABA: GUARDA-ROUPA -->
+    <section id="guarda-roupa" class="tab-panel active">
+      <form id="item-form" class="item-form">
+        <h2>Adicionar peça</h2>
+
+        <div class="field">
+          <label for="item-name">Nome</label>
+          <input type="text" id="item-name" placeholder="Ex: Camisa listrada azul" required />
+        </div>
+
+        <div class="field">
+          <label for="item-category">Categoria</label>
+          <select id="item-category" required>
+            <option value="parte-de-cima">Parte de cima</option>
+            <option value="parte-de-baixo">Parte de baixo</option>
+            <option value="vestido">Vestido</option>
+            <option value="casaco">Casaco / Jaqueta</option>
+            <option value="calcado">Calçado</option>
+            <option value="acessorio">Acessório</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="item-color">Cor predominante</label>
+          <input type="text" id="item-color" placeholder="Ex: azul marinho" required />
+        </div>
+
+        <div class="field">
+          <label for="item-photo">Foto (opcional)</label>
+          <input type="file" id="item-photo" accept="image/*" />
+        </div>
+
+        <button type="submit" class="btn-primary">Adicionar ao guarda-roupa</button>
+      </form>
+
+      <div class="wardrobe-section">
+        <h2>Peças cadastradas (<span id="item-count">0</span>)</h2>
+        <div id="wardrobe-grid" class="grid"></div>
+        <p id="wardrobe-empty" class="empty-state">
+          Nenhuma peça cadastrada ainda. Adicione suas roupas acima para começar.
+        </p>
+      </div>
+    </section>
+
+    <!-- ABA: MONTAR LOOK -->
+    <section id="montar-look" class="tab-panel">
+      <div class="generate-bar">
+        <button id="generate-btn" class="btn-primary">🎲 Gerar look</button>
+        <button id="save-look-btn" class="btn-secondary" disabled>💾 Salvar este look</button>
+      </div>
+      <div id="look-preview" class="look-preview">
+        <p class="empty-state">Clique em "Gerar look" para receber uma sugestão com as peças do seu guarda-roupa.</p>
+      </div>
+    </section>
+
+    <!-- ABA: LOOKS SALVOS -->
+    <section id="looks-salvos" class="tab-panel">
+      <h2>Looks salvos</h2>
+      <div id="saved-looks-grid" class="grid"></div>
+      <p id="saved-looks-empty" class="empty-state">Você ainda não salvou nenhum look.</p>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
