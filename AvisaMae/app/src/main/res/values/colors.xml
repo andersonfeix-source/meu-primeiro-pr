@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="brand_primary">#1B5E20</color>
+    <color name="brand_primary_dark">#0D3D12</color>
+    <color name="alert_background">#0D3D12</color>
+    <color name="alert_text">#FFFFFF</color>
+    <color name="alert_accent">#FFC400</color>
+    <color name="button_close">#455A64</color>
+</resources>
